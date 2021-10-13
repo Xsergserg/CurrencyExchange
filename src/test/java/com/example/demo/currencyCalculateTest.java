@@ -5,6 +5,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import org.springframework.util.Assert;
 
+import com.example.demo.service.CurrencyService;
+
 
 @SpringBootTest
 public class currencyCalculateTest {

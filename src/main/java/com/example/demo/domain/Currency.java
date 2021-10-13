@@ -1,17 +1,17 @@
-package com.example.demo;
+package com.example.demo.domain;
 
-public class CurrencyClass {
-	private String CharCode;
+public class Currency {
+	private String сharCode;
 	private Double nominal;
 	private Double value;
-	public CurrencyClass(String name, Double nominal, Double value) {
+	public Currency(String name, Double nominal, Double value) {
 		super();
-		this.CharCode = name;
+		this.сharCode = name;
 		this.nominal = nominal;
 		this.value = value;
 	}
 	public String getCharCode() {
-		return CharCode;
+		return сharCode;
 	}
 	public Double getNominal() {
 		return nominal;
@@ -21,6 +21,6 @@ public class CurrencyClass {
 	}
 	@Override
 	public String toString() {
-		return "Currency [CharCode=" + CharCode + ", nominal=" + nominal + ", value=" + value + "]";
+		return "Currency [CharCode=" + сharCode + ", nominal=" + nominal + ", value=" + value + "]";
 	}
 }

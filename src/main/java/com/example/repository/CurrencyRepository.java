@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.repository;
 
 import java.util.ArrayList;
 import java.net.URL;
@@ -10,22 +10,23 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class CurrencyRepository {
-	private ArrayList<CurrencyClass> currencies = null;
-	private Document doc;
+import com.example.demo.domain.Currency;
 
-	public ArrayList<CurrencyClass> getCurrencies() {
-		return currencies;
-	}
+public class CurrencyRepository implements Repository{
+	private ArrayList<Currency> currencies = null;
 
-	public CurrencyRepository(String urlstr) {
+	public CurrencyRepository() {
 		super();
+	}
+	
+	@Override
+	public void requestCurrency(String urlStr) {
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-			URL url = new URL(urlstr);
+			URL url = new URL(urlStr);
 			InputStream stream = url.openStream();
-			doc = docBuilder.parse(stream);
+			Document doc = docBuilder.parse(stream);
 			Node root = doc.getDocumentElement();
 			NodeList currencyNodes = root.getChildNodes();
 			
@@ -55,15 +56,20 @@ public class CurrencyRepository {
 					}
 					if (CharCode != null) {
 						if (currencies == null) {
-							currencies = new ArrayList<CurrencyClass>();
-							currencies.add(new CurrencyClass("RUR", 1.0, 1.0));
+							currencies = new ArrayList<Currency>();
+							currencies.add(new Currency("RUR", 1.0, 1.0));
 						}
-						currencies.add(new CurrencyClass(CharCode, nominal, value));
+						currencies.add(new Currency(CharCode, nominal, value));
 					}
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public ArrayList<Currency> getCurrencies() {
+		return currencies;
 	}
 }
