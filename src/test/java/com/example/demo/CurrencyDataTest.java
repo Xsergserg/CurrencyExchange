@@ -9,7 +9,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.util.Assert;
 
-import com.example.demo.domain.RequestData;
+import com.example.demo.controller.RequestParameters;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,32 +49,32 @@ public class CurrencyDataTest {
 	}
 	@Test
 	public void correctStr1() throws Exception {
-		RequestData currencyData = new RequestData("100 EUR RUR");
-		RequestData otherCurrencyData = new RequestData(100.0, "EUR", "RUR", true);
+		RequestParameters currencyData = new RequestParameters("100 EUR RUR");
+		RequestParameters otherCurrencyData = new RequestParameters(100.0, "EUR", "RUR", true);
 		Assert.isTrue(currencyData.equals(otherCurrencyData), "Right example");
 	}
 	@Test
 	public void correctStr2() throws Exception {
-		RequestData currencyData = new RequestData("100,EUR,RUR");
-		RequestData otherCurrencyData = new RequestData(100.0, "EUR", "RUR", true);
+		RequestParameters currencyData = new RequestParameters("100,EUR,RUR");
+		RequestParameters otherCurrencyData = new RequestParameters(100.0, "EUR", "RUR", true);
 		Assert.isTrue(currencyData.equals(otherCurrencyData), "Right example");
 	}
 	@Test
 	public void correctStr3() throws Exception {
-		RequestData currencyData = new RequestData("100 eur rur");
-		RequestData otherCurrencyData = new RequestData(100.0, "EUR", "RUR", true);
+		RequestParameters currencyData = new RequestParameters("100 eur rur");
+		RequestParameters otherCurrencyData = new RequestParameters(100.0, "EUR", "RUR", true);
 		Assert.isTrue(currencyData.equals(otherCurrencyData), "Right example");
 	}
 	@Test
 	public void correctStr4() throws Exception {
-		RequestData currencyData = new RequestData("100, amd rur");
-		RequestData otherCurrencyData = new RequestData(100.0, "AMD", "RUR", true);
+		RequestParameters currencyData = new RequestParameters("100, amd rur");
+		RequestParameters otherCurrencyData = new RequestParameters(100.0, "AMD", "RUR", true);
 		Assert.isTrue(currencyData.equals(otherCurrencyData), "Right example");
 	}
 	@Test
 	public void correctStr5() throws Exception {
-		RequestData currencyData = new RequestData("\"100 EUR RUR\"");
-		RequestData otherCurrencyData = new RequestData(100.0, "EUR", "RUR", true);
+		RequestParameters currencyData = new RequestParameters("\"100 EUR RUR\"");
+		RequestParameters otherCurrencyData = new RequestParameters(100.0, "EUR", "RUR", true);
 		Assert.isTrue(currencyData.equals(otherCurrencyData), "Right example");
 	}
 }

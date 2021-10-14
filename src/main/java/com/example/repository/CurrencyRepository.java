@@ -14,10 +14,6 @@ import com.example.demo.domain.Currency;
 
 public class CurrencyRepository implements Repository{
 	private ArrayList<Currency> currencies = null;
-
-	public CurrencyRepository() {
-		super();
-	}
 	
 	@Override
 	public void requestCurrency(String urlStr) {
