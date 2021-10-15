@@ -4,23 +4,34 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 public class RequestParameters {
-	private String value = null;
-	private String sourceCurrencyCharCode = null;
-	private String targetCurrencyCharCode = null;
+	private String value;
+	private String sourceCurrencyCharCode;
+	private String targetCurrencyCharCode;
 	
-	/*
-	 * public void setRequestParameters(String value, String sourceCurrencyCharCode,
-	 * String targetCurrencyCharCode) { this.value = value;
-	 * this.sourceCurrencyCharCode = sourceCurrencyCharCode;
-	 * this.targetCurrencyCharCode = targetCurrencyCharCode; }
-	 */
-	
-	@Autowired
-	public RequestParameters() {}
+	public RequestParameters(String value, String sourceCurrencyCharCode, String targetCurrencyCharCode) {
+		super();
+		this.value = value;
+		this.sourceCurrencyCharCode = sourceCurrencyCharCode;
+		this.targetCurrencyCharCode = targetCurrencyCharCode;
+	}
 
+	public static RequestParameters parse(String parametersStr) {
+		parametersStr = parametersStr.trim();
+		if (parametersStr.length() > 0) {
+			if ((parametersStr.charAt(0) == '"' & parametersStr.charAt(parametersStr.length() - 1) == '"')
+					|| (parametersStr.charAt(0) == '\'' & parametersStr.charAt(parametersStr.length() - 1) == '\'')) {
+				parametersStr = parametersStr.substring(1, parametersStr.length() - 1);
+			}
+		}
+		ArrayList<String> parameters = new ArrayList<String>(Arrays.asList(parametersStr.split("[ ,]")));
+		parameters.removeAll(Arrays.asList("", null));
+		if (parameters.size() != 3) {
+			return new RequestParameters(null, null, null);
+		}
+		return new RequestParameters(parameters.get(0), parameters.get(1), parameters.get(2));
+	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(sourceCurrencyCharCode, targetCurrencyCharCode, value);
@@ -40,24 +51,6 @@ public class RequestParameters {
 				&& Objects.equals(value, other.value);
 	}
 
-	public void parse(String parametersStr) {
-		parametersStr = parametersStr.trim();
-		if (parametersStr.length() > 0) {
-			if ((parametersStr.charAt(0) == '"' & parametersStr.charAt(parametersStr.length() - 1) == '"')
-					|| (parametersStr.charAt(0) == '\'' & parametersStr.charAt(parametersStr.length() - 1) == '\'')) {
-				parametersStr = parametersStr.substring(1, parametersStr.length() - 1);
-			}
-		}
-		ArrayList<String> parameters = new ArrayList<String>(Arrays.asList(parametersStr.split("[ ,]")));
-		parameters.removeAll(Arrays.asList("", null));
-		if (parameters.size() != 3) {
-			return;
-		}
-		value = parameters.get(0);
-		sourceCurrencyCharCode = parameters.get(1);
-		targetCurrencyCharCode = parameters.get(2);
-	}
-	
 	public String getValue() {
 		return value;
 	}
@@ -68,7 +61,5 @@ public class RequestParameters {
 
 	public String getTargetCurrencyCharCode() {
 		return targetCurrencyCharCode;
-	};
-	
-	
+	};	
 }

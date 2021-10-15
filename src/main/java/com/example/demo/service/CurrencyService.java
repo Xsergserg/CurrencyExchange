@@ -1,18 +1,16 @@
 package com.example.demo.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.example.demo.controller.RequestParameters;
+import org.springframework.stereotype.Component;
 import com.example.demo.domain.Currency;
-import com.example.repository.Repository;
+import com.example.demo.repository.Repository;
 
+@Component
 public class CurrencyService {
 	@Autowired
 	private Repository repository;
-
+	
 	public String currencyExchange(String valueStr, String sourceCurrencyCharCode, String targetCurrencyCharCode) {
 		Double value;
 		try {

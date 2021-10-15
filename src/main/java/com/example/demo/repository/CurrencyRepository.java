@@ -1,4 +1,4 @@
-package com.example.repository;
+package com.example.demo.repository;
 
 import java.util.ArrayList;
 import java.net.URL;
@@ -6,15 +6,18 @@ import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.example.demo.domain.Currency;
 
+@Component
 public class CurrencyRepository implements Repository{
 	private ArrayList<Currency> currencies = null;
-	
+
 	@Override
 	public void requestCurrency(String urlStr) {
 		try {

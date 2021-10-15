@@ -6,14 +6,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.repository.CurrencyRepository;
 import com.example.demo.service.CurrencyService;
-import com.example.repository.CurrencyRepository;
 
 @RestController
 public class CurrencyController {
 	@Autowired
 	private CurrencyService currencyService;
-	private RequestParameters requestParameters; 
 
 	@GetMapping("/")
 	public String index() {
@@ -21,14 +20,14 @@ public class CurrencyController {
 	}
 
 	@GetMapping("/api")
-	public String currencyRequestParam(@RequestParam String ammount, @RequestParam String fromCurrency,
+	public String currencyRequestParam(@RequestParam String amount, @RequestParam String fromCurrency,
 			@RequestParam String toCurrency) {
-		return currencyService.currencyExchange(ammount, fromCurrency, toCurrency);
+		return currencyService.currencyExchange(amount, fromCurrency, toCurrency);
 	}
 
 	@GetMapping("/api/{parameters}")
 	public String currencyRequestPathVariable(@PathVariable String parameters) {
-		requestParameters.parse(parameters);
+		RequestParameters requestParameters = RequestParameters.parse(parameters);
 		return currencyService.currencyExchange(requestParameters.getValue(), requestParameters.getSourceCurrencyCharCode(),
 				requestParameters.getTargetCurrencyCharCode());
 	}
