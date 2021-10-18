@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import org.springframework.util.Assert;
 
+import com.example.demo.exception.Exception;
 import com.example.demo.repository.CurrencyRepository;
 
 

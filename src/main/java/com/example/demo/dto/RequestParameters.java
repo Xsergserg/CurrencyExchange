@@ -1,22 +1,26 @@
-package com.example.demo.controller;
+package com.example.demo.dto;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+import com.example.demo.exception.CurrencyExchangeException;
+
+
 public class RequestParameters {
-	private String value;
+	private Double value;
 	private String sourceCurrencyCharCode;
 	private String targetCurrencyCharCode;
+
 	
-	public RequestParameters(String value, String sourceCurrencyCharCode, String targetCurrencyCharCode) {
+	public RequestParameters(Double value, String sourceCurrencyCharCode, String targetCurrencyCharCode) {
 		super();
 		this.value = value;
 		this.sourceCurrencyCharCode = sourceCurrencyCharCode;
 		this.targetCurrencyCharCode = targetCurrencyCharCode;
 	}
 
-	public static RequestParameters parse(String parametersStr) {
+	public static RequestParameters parse(String parametersStr) throws Exception {
 		parametersStr = parametersStr.trim();
 		if (parametersStr.length() > 0) {
 			if ((parametersStr.charAt(0) == '"' & parametersStr.charAt(parametersStr.length() - 1) == '"')
@@ -27,31 +31,26 @@ public class RequestParameters {
 		ArrayList<String> parameters = new ArrayList<String>(Arrays.asList(parametersStr.split("[ ,]")));
 		parameters.removeAll(Arrays.asList("", null));
 		if (parameters.size() != 3) {
-			return new RequestParameters(null, null, null);
+			throw new CurrencyExchangeException("Not ehough arguments");
 		}
-		return new RequestParameters(parameters.get(0), parameters.get(1), parameters.get(2));
+		Double value = parseValue(parameters.get(0));
+		return new RequestParameters(value, parameters.get(1), parameters.get(2));
+	}
+
+	public static Double parseValue(String valueStr) throws Exception {
+		Double value;
+		try {
+			value = Double.parseDouble(valueStr);
+		} catch (Exception e) {
+			throw new CurrencyExchangeException("value format is not double\n");
+		}
+		if (value < 0) {
+			throw new CurrencyExchangeException("service works only with positive numbers");
+		}
+		return value;
 	}
 	
-	@Override
-	public int hashCode() {
-		return Objects.hash(sourceCurrencyCharCode, targetCurrencyCharCode, value);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		RequestParameters other = (RequestParameters) obj;
-		return Objects.equals(sourceCurrencyCharCode, other.sourceCurrencyCharCode)
-				&& Objects.equals(targetCurrencyCharCode, other.targetCurrencyCharCode)
-				&& Objects.equals(value, other.value);
-	}
-
-	public String getValue() {
+	public Double getValue() {
 		return value;
 	}
 

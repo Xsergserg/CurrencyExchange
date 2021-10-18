@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.repository.CurrencyRepository;
+import com.example.demo.dto.RequestParameters;
 import com.example.demo.service.CurrencyService;
 
 @RestController
@@ -20,15 +20,28 @@ public class CurrencyController {
 	}
 
 	@GetMapping("/api")
-	public String currencyRequestParam(@RequestParam String amount, @RequestParam String fromCurrency,
+	public String currencyRequestParam(@RequestParam String valueStr, @RequestParam String fromCurrency,
 			@RequestParam String toCurrency) {
-		return currencyService.currencyExchange(amount, fromCurrency, toCurrency);
+		Double value;
+		try {
+			value = RequestParameters.parseValue(valueStr);
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+		RequestParameters requestParameters = new RequestParameters(value, fromCurrency, toCurrency);
+		return currencyService.currencyExchange(requestParameters.getValue(),
+				requestParameters.getSourceCurrencyCharCode(), requestParameters.getTargetCurrencyCharCode());
 	}
 
 	@GetMapping("/api/{parameters}")
 	public String currencyRequestPathVariable(@PathVariable String parameters) {
-		RequestParameters requestParameters = RequestParameters.parse(parameters);
-		return currencyService.currencyExchange(requestParameters.getValue(), requestParameters.getSourceCurrencyCharCode(),
-				requestParameters.getTargetCurrencyCharCode());
+		RequestParameters requestParameters = null;
+		try {
+			requestParameters = RequestParameters.parse(parameters);
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+		return currencyService.currencyExchange(requestParameters.getValue(),
+				requestParameters.getSourceCurrencyCharCode(), requestParameters.getTargetCurrencyCharCode());
 	}
 }

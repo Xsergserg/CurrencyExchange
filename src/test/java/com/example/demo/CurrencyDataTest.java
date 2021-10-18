@@ -9,7 +9,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.util.Assert;
 
-import com.example.demo.controller.RequestParameters;
+import com.example.demo.dto.RequestParameters;
+import com.example.demo.exception.Exception;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

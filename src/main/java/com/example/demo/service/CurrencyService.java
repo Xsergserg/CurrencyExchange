@@ -1,35 +1,28 @@
 package com.example.demo.service;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import com.example.demo.domain.Currency;
-import com.example.demo.repository.Repository;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-@Component
+import com.example.demo.domain.Currency;
+import com.example.demo.exception.CurrencyExchangeException;
+
+@Service
 public class CurrencyService {
-	@Autowired
-	private Repository repository;
-	
-	public String currencyExchange(String valueStr, String sourceCurrencyCharCode, String targetCurrencyCharCode) {
-		Double value;
+
+	public String currencyExchange(Double value, String sourceCurrencyCharCode, String targetCurrencyCharCode) {
+		ArrayList<Currency> currencyList;
 		try {
-			value = Double.parseDouble(valueStr);
-			if (value < 0) {
-				return "Error: service works only with positive numbers";
-			}
+			currencyList = requestCurrency("http://www.cbr.ru/scripts/XML_daily.asp");
 		} catch (Exception e) {
-			return "Error: Wrong string format";
+			return e.getMessage();
 		}
-		try {
-			repository.requestCurrency("http://www.cbr.ru/scripts/XML_daily.asp");
-		} catch (Exception e) {
-			return "Error: connection error, try later please\n";
-		}
-		if (repository.getCurrencies() == null) {
-			return "Error: data is not available\n";
-		}
-		ArrayList<Currency> currencyList = repository.getCurrencies();
 		Double sourceNominal = null;
 		Double targetNominal = null;
 		Double sourceValue = null;
@@ -52,8 +45,61 @@ public class CurrencyService {
 	public String currencyCalculate(Double value, Double sourceNominal, Double sourceValue, Double targetValue,
 			Double targetNominal) {
 		if (sourceNominal == null | targetNominal == null | sourceValue == null | targetValue == null) {
-			return "Error: unknown currency char code";
+			return "unknown currency char code";
 		}
 		return String.valueOf(value / sourceNominal * sourceValue / targetValue * targetNominal);
+	}
+	
+	public ArrayList<Currency> requestCurrency(String urlStr) throws Exception {
+		try {
+		ArrayList<Currency> currencies = null;
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = dbf.newDocumentBuilder();
+		URL url = new URL(urlStr);
+		InputStream stream = url.openStream();
+		Document doc = docBuilder.parse(stream);
+		Node root = doc.getDocumentElement();
+		NodeList currencyNodes = root.getChildNodes();
+
+		for (int i = 0; i < currencyNodes.getLength(); i++) {
+			Node currency = currencyNodes.item(i);
+			if (currency.getNodeType() != Node.TEXT_NODE) {
+				NodeList currencyProps = currency.getChildNodes();
+				String CharCode = null;
+				double nominal = 0;
+				double value = 0;
+				for (int j = 0; j < currencyProps.getLength(); j++) {
+
+					Node currencyProp = currencyProps.item(j);
+					if (currencyProp.getNodeType() != Node.TEXT_NODE) {
+						if (currencyProp.getNodeName().equals("CharCode")) {
+							CharCode = currencyProp.getChildNodes().item(0).getTextContent();
+						}
+						if (currencyProp.getNodeName().equals("Nominal")) {
+							nominal = Double.parseDouble(
+									currencyProp.getChildNodes().item(0).getTextContent().replace(',', '.'));
+						}
+						if (currencyProp.getNodeName().equals("Value")) {
+							value = Double.parseDouble(
+									currencyProp.getChildNodes().item(0).getTextContent().replace(',', '.'));
+						}
+					}
+				}
+				if (CharCode != null) {
+					if (currencies == null) {
+						currencies = new ArrayList<Currency>();
+						currencies.add(new Currency("RUR", 1.0, 1.0));
+					}
+					currencies.add(new Currency(CharCode, nominal, value));
+				}
+			}
+		}
+		if (currencies == null) {
+			throw new CurrencyExchangeException("data is not available\n");
+		}
+		return currencies;
+		} catch (Exception e) {
+			throw new CurrencyExchangeException("connection error, try later please\n");
+		}
 	}
 }
