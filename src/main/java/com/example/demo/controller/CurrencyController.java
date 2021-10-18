@@ -20,11 +20,11 @@ public class CurrencyController {
 	}
 
 	@GetMapping("/api")
-	public String currencyRequestParam(@RequestParam String valueStr, @RequestParam String fromCurrency,
+	public String currencyRequestParam(@RequestParam String amount, @RequestParam String fromCurrency,
 			@RequestParam String toCurrency) {
 		Double value;
 		try {
-			value = RequestParameters.parseValue(valueStr);
+			value = RequestParameters.parseValue(amount);
 		} catch (Exception e) {
 			return e.getMessage();
 		}
