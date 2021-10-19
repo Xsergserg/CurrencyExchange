@@ -16,10 +16,11 @@ import com.example.demo.domain.Currency;
 import com.example.demo.exception.CurrencyExchangeException;
 
 @Service
-public class RequestCBRService {
-	public ArrayList<Currency> requestCurrency(String urlStr) throws Exception {
+public class RequestCurrencyFromCBRService {
+	ArrayList<Currency> currencies = null;
+	
+	public ArrayList<Currency> requestCurrenciesFromCBR(String urlStr) throws Exception {
 		try {
-			ArrayList<Currency> currencies = null;
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 			URL url = new URL(urlStr);
@@ -69,10 +70,10 @@ public class RequestCBRService {
 		}
 	}
 
-	public Currency getCurrency(String charCode, ArrayList<Currency> currencyList) throws Exception {
-		for (int i = 0; i < currencyList.size(); i++) {
-			if (currencyList.get(i).getCharCode().equals(charCode)) {
-				return currencyList.get(i);
+	public Currency getCurrencyByCharCode(String charCode) throws Exception {
+		for (int i = 0; i < currencies.size(); i++) {
+			if (currencies.get(i).getCharCode().equals(charCode)) {
+				return currencies.get(i);
 			}
 		}
 		throw new CurrencyExchangeException("500");
