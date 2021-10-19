@@ -23,7 +23,6 @@ public class CurrencyController {
 	public String currencyRequestParam(@RequestParam Double amount, @RequestParam String fromCurrency,
 			@RequestParam String toCurrency) {
 		try {
-			//Double value = RequestParameters.parseValue(amount);
 			RequestParameters requestParameters = new RequestParameters(amount, fromCurrency, toCurrency);
 			return currencyService.currencyExchange(requestParameters);
 		} catch (Exception e) {

@@ -8,6 +8,7 @@ import com.example.demo.exception.CurrencyExchangeException;
 
 
 public class RequestParameters {
+	
 	private Double value;
 	private String sourceCurrencyCharCode;
 	private String targetCurrencyCharCode;
@@ -19,8 +20,8 @@ public class RequestParameters {
 			throw new CurrencyExchangeException("400");
 		}
 		this.value = value;
-		this.sourceCurrencyCharCode = sourceCurrencyCharCode;
-		this.targetCurrencyCharCode = targetCurrencyCharCode;
+		this.sourceCurrencyCharCode = sourceCurrencyCharCode.toUpperCase();
+		this.targetCurrencyCharCode = targetCurrencyCharCode.toUpperCase();
 	}
 
 	public static RequestParameters parse(String parametersStr) throws Exception {
@@ -39,13 +40,6 @@ public class RequestParameters {
 		Double value = Double.parseDouble(parameters.get(0));
 		return new RequestParameters(value, parameters.get(1), parameters.get(2));
 	}
-
-	/*
-	 * public static Double parseValue(String valueStr) throws Exception { Double
-	 * value; try { value = Double.parseDouble(valueStr); } catch (Exception e) {
-	 * throw new CurrencyExchangeException("400"); } if (value < 0) { throw new
-	 * CurrencyExchangeException("400"); } return value; }
-	 */
 	
 	public Double getValue() {
 		return value;
