@@ -68,15 +68,5 @@ public class RequestCurrencyFromCBRService {
 		} catch (Exception e) {
 			throw new CurrencyExchangeException("500");
 		}
-	}
-
-	public Currency getCurrencyByCharCode(String charCode,  ArrayList<Currency> currencies) throws Exception {
-		for (int i = 0; i < currencies.size(); i++) {
-			if (currencies.get(i).getCharCode().equals(charCode)) {
-				return currencies.get(i);
-			}
-		}
-		throw new CurrencyExchangeException("500");
-	}
-	
+	}	
 }

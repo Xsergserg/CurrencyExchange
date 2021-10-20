@@ -24,6 +24,20 @@ public class RequestParameters {
 		this.targetCurrencyCharCode = targetCurrencyCharCode.toUpperCase();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RequestParameters other = (RequestParameters) obj;
+		return Objects.equals(sourceCurrencyCharCode, other.sourceCurrencyCharCode)
+				&& Objects.equals(targetCurrencyCharCode, other.targetCurrencyCharCode)
+				&& Objects.equals(value, other.value);
+	}
+
 	public static RequestParameters parse(String parametersStr) throws Exception {
 		parametersStr = parametersStr.trim();
 		if (parametersStr.length() > 0) {
