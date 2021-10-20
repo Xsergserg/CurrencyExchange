@@ -17,10 +17,10 @@ import com.example.demo.exception.CurrencyExchangeException;
 
 @Service
 public class RequestCurrencyFromCBRService {
-	ArrayList<Currency> currencies = null;
 	
-	public ArrayList<Currency> requestCurrenciesFromCBR(String urlStr) throws Exception {
+	public ArrayList<Currency> requestCurrencies(String urlStr) throws Exception {
 		try {
+			ArrayList<Currency> currencies = null;
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 			URL url = new URL(urlStr);
@@ -70,7 +70,7 @@ public class RequestCurrencyFromCBRService {
 		}
 	}
 
-	public Currency getCurrencyByCharCode(String charCode) throws Exception {
+	public Currency getCurrencyByCharCode(String charCode,  ArrayList<Currency> currencies) throws Exception {
 		for (int i = 0; i < currencies.size(); i++) {
 			if (currencies.get(i).getCharCode().equals(charCode)) {
 				return currencies.get(i);

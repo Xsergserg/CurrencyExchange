@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +15,11 @@ public class CurrencyService {
 	private RequestCurrencyFromCBRService requestCurrencyFromCBRService;
 
 	public String currencyExchange(RequestParameters requestParameters) throws Exception {
-		requestCurrencyFromCBRService.requestCurrenciesFromCBR("http://www.cbr.ru/scripts/XML_daily.asp");
+		ArrayList<Currency> currenciesFromCBR =	requestCurrencyFromCBRService.requestCurrencies("http://www.cbr.ru/scripts/XML_daily.asp");
 		Currency sourceCurrency = requestCurrencyFromCBRService
-				.getCurrencyByCharCode(requestParameters.getSourceCurrencyCharCode());
+				.getCurrencyByCharCode(requestParameters.getSourceCurrencyCharCode(), currenciesFromCBR);
 		Currency targetCurrency = requestCurrencyFromCBRService
-				.getCurrencyByCharCode(requestParameters.getTargetCurrencyCharCode());
+				.getCurrencyByCharCode(requestParameters.getTargetCurrencyCharCode(), currenciesFromCBR);
 		return currencyCalculate(requestParameters.getValue(), sourceCurrency.getNominal(), sourceCurrency.getValue(),
 				targetCurrency.getNominal(), targetCurrency.getValue());
 	}
