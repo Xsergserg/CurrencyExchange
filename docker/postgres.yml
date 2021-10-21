@@ -1,18 +1,22 @@
-# Use postgres/example user/password credentials
 version: '3.1'
 
 services:
 
-  db:
+  postgres:
     image: postgres
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./data:/var/lib/postgresql/data
     restart: always
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: CURRENCY_EXCHANGE
+    ports:       
+      - 5432:5432
 
   adminer:
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - 8000:8080
