@@ -6,9 +6,11 @@ import com.example.demo.domain.Currency;
 import com.example.demo.exception.CurrencyExchangeException;
 
 public class CurrencyList {
+	//интерфейсы справа
 	public ArrayList<Currency> currencies;
 	
 	public CurrencyList(ArrayList<Currency> currencies) {
+		//супер только для расшираемых в дальнейшем классе
 		super();
 		this.currencies = currencies;
 	}

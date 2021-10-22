@@ -12,10 +12,13 @@ import com.example.demo.exception.CurrencyExchangeException;
 
 @Service
 public class CurrencyService {
+	//интерфейс
 	@Autowired
 	private RequestCurrencyFromCBRService requestCurrencyFromCBRService;
 
 	public String currencyExchange(RequestParameters requestParameters) throws Exception {
+		//Справа всегда интерфейс list
+		//ссылка внутри класса реквест блабла
 		ArrayList<Currency> currenciesFromCBR = requestCurrencyFromCBRService
 				.requestCurrencies("http://www.cbr.ru/scripts/XML_daily.asp");
 		CurrencyList currencyList = new CurrencyList(currenciesFromCBR);
@@ -25,6 +28,7 @@ public class CurrencyService {
 				targetCurrency.getNominal(), targetCurrency.getValue());
 	}
 
+	//отдельный класс или другое решение
 	public String currencyCalculate(Double value, Double sourceNominal, Double sourceValue, Double targetNominal,
 			Double targetValue) throws Exception {
 		if (sourceNominal == null | targetNominal == null | sourceValue == null | targetValue == null) {

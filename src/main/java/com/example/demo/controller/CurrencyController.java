@@ -9,8 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.RequestParameters;
 import com.example.demo.service.CurrencyService;
 
+
+
+
 @RestController
 public class CurrencyController {
+	//здесь должен быть конструктор
 	@Autowired
 	private CurrencyService currencyService;
 
@@ -18,7 +22,7 @@ public class CurrencyController {
 	public String index() {
 		return "Greetings from CurrencyExchangeApp!\n For using this app send string in form 'x, y, z', where x - ammount, y - source currency, z - target currency.\n For example: localhost:8080/api/100,USD,RUR or localhost:8080/api?amount=100&fromCurrency=USD&toCurrency=EUR";
 	}
-
+	//переименовать 
 	@GetMapping("/api")
 	public String currencyRequestParam(@RequestParam Double amount, @RequestParam String fromCurrency,
 			@RequestParam String toCurrency) throws Exception {

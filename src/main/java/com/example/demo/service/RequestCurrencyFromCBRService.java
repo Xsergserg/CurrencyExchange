@@ -15,6 +15,9 @@ import org.w3c.dom.NodeList;
 import com.example.demo.domain.Currency;
 import com.example.demo.exception.CurrencyExchangeException;
 
+
+//xpath
+
 @Service
 public class RequestCurrencyFromCBRService {
 	
