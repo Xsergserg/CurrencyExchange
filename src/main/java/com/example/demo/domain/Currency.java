@@ -5,7 +5,6 @@ public class Currency {
 	private Double nominal;
 	private Double value;
 	public Currency(String name, Double nominal, Double value) {
-		super();
 		this.сharCode = name;
 		this.nominal = nominal;
 		this.value = value;

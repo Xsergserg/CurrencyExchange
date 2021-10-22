@@ -1,39 +1,33 @@
 package com.example.demo.service;
 
-import java.util.ArrayList;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.w3c.dom.Document;
 import com.example.demo.domain.Currency;
-import com.example.demo.dto.CurrencyList;
 import com.example.demo.dto.RequestParameters;
 import com.example.demo.exception.CurrencyExchangeException;
 
 @Service
 public class CurrencyService {
-	//интерфейс
-	@Autowired
-	private RequestCurrencyFromCBRService requestCurrencyFromCBRService;
+	private CurrencyData currencyData;
 
-	public String currencyExchange(RequestParameters requestParameters) throws Exception {
-		//Справа всегда интерфейс list
-		//ссылка внутри класса реквест блабла
-		ArrayList<Currency> currenciesFromCBR = requestCurrencyFromCBRService
-				.requestCurrencies("http://www.cbr.ru/scripts/XML_daily.asp");
-		CurrencyList currencyList = new CurrencyList(currenciesFromCBR);
-		Currency sourceCurrency = currencyList.getCurrencyByCharCode(requestParameters.getSourceCurrencyCharCode());
-		Currency targetCurrency = currencyList.getCurrencyByCharCode(requestParameters.getTargetCurrencyCharCode());
-		return currencyCalculate(requestParameters.getValue(), sourceCurrency.getNominal(), sourceCurrency.getValue(),
-				targetCurrency.getNominal(), targetCurrency.getValue());
+	@Autowired
+	public CurrencyService(CurrencyData currencyData) {
+		this.currencyData = currencyData;
 	}
 
-	//отдельный класс или другое решение
-	public String currencyCalculate(Double value, Double sourceNominal, Double sourceValue, Double targetNominal,
-			Double targetValue) throws Exception {
-		if (sourceNominal == null | targetNominal == null | sourceValue == null | targetValue == null) {
-			throw new CurrencyExchangeException("500");
+	public String currencyExchange(RequestParameters requestParameters) {
+		Document currencyFromDocument = currencyData.requestCurrencyDocument();
+		Currency sourceCurrency = currencyData.requestCurrency(requestParameters.getSourceCurrencyCharCode(), currencyFromDocument);
+		Currency targetCurrency = currencyData.requestCurrency(requestParameters.getTargetCurrencyCharCode(), currencyFromDocument);
+		Double value = requestParameters.getValue();
+		Double sourceNominal = sourceCurrency.getNominal();
+		Double targetNominal = sourceCurrency.getValue();
+		Double sourceValue = targetCurrency.getNominal();
+		Double targetValue = targetCurrency.getValue();
+		if (sourceNominal.isNaN() || targetNominal.isNaN() || sourceValue.isNaN() || targetValue.isNaN()) {
+			throw new CurrencyExchangeException("Some of requested data not found");
 		}
-		return String.valueOf(value / sourceNominal * sourceValue / targetValue * targetNominal);
+		return String.valueOf( value / sourceNominal * sourceValue / targetValue * targetNominal);
 	}
 }
