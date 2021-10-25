@@ -8,33 +8,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import com.example.demo.domain.Currency;
+import com.example.demo.domain.CurrencyLogData;
 import com.example.demo.dto.RequestParameters;
 import com.example.demo.exception.CurrencyExchangeException;
+import com.example.demo.repository.CurrencyExchangeRepository;
 
 @Service
 public class CurrencyService {
 	private CurrencyData currencyData;
+	private CurrencyExchangeRepository currencyExchangeRepository;
 
 	@Autowired
-	public CurrencyService(CurrencyData currencyData) {
+	public CurrencyService(CurrencyData currencyData, CurrencyExchangeRepository currencyExchangeRepository) {
 		this.currencyData = currencyData;
+		this.currencyExchangeRepository = currencyExchangeRepository;
 	}
 
 	public String currencyExchange(RequestParameters requestParameters) {
-		Document currencyFromDocument = currencyData.requestCurrencyDocument();
-		Currency sourceCurrency = requestCurrency(requestParameters.getSourceCurrencyCharCode(), currencyFromDocument);
-		Currency targetCurrency = requestCurrency(requestParameters.getTargetCurrencyCharCode(), currencyFromDocument);
-		Double value = requestParameters.getValue();
-		Double sourceNominal = sourceCurrency.getNominal();
-		Double targetNominal = sourceCurrency.getValue();
-		Double sourceValue = targetCurrency.getNominal();
-		Double targetValue = targetCurrency.getValue();
-		if (sourceNominal.isNaN() || targetNominal.isNaN() || sourceValue.isNaN() || targetValue.isNaN()) {
-			throw new CurrencyExchangeException("Some of requested data not found");
+		Double result = Double.NaN;
+		try {
+			Document currencyFromDocument = currencyData.requestCurrencyDocument();
+			Currency sourceCurrency = requestCurrency(requestParameters.getSourceCurrencyCharCode(),
+					currencyFromDocument);
+			Currency targetCurrency = requestCurrency(requestParameters.getTargetCurrencyCharCode(),
+					currencyFromDocument);
+			Double value = requestParameters.getValue();
+			Double sourceNominal = sourceCurrency.getNominal();
+			Double targetNominal = sourceCurrency.getValue();
+			Double sourceValue = targetCurrency.getNominal();
+			Double targetValue = targetCurrency.getValue();
+			if (sourceNominal.isNaN() || targetNominal.isNaN() || sourceValue.isNaN() || targetValue.isNaN()) {
+				throw new CurrencyExchangeException("Some of requested data not found");
+			}
+			result = value / sourceNominal * sourceValue / targetValue * targetNominal;
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			currencyExchangeRepository.save(new CurrencyLogData(requestParameters, result));
 		}
-		return String.valueOf( value / sourceNominal * sourceValue / targetValue * targetNominal);
+		return String.valueOf(result);
 	}
-	
+
 	public Currency requestCurrency(String charCode, Document xmlDocument) {
 		try {
 			if (charCode.equals("RUR")) {

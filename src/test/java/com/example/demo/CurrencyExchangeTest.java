@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import com.example.demo.dto.RequestParameters;
+import com.example.demo.repository.CurrencyExchangeRepository;
 import com.example.demo.service.CurrencyService;
 
 @SpringBootTest
@@ -14,8 +15,8 @@ public class CurrencyExchangeTest {
 	private CurrencyService currencyService;
 
 	@Autowired
-	public CurrencyExchangeTest(CurrencyService currencyService) {
-		this.currencyService = new CurrencyService(new CurrencyFromFileService());
+	public CurrencyExchangeTest(CurrencyService currencyService, CurrencyExchangeRepository currencyExchangeRepository) {
+		this.currencyService = new CurrencyService(new CurrencyFromFileService(), currencyExchangeRepository);
 	}
 
 	@Test
