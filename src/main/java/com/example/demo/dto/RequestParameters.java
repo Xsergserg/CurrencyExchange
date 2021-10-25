@@ -37,8 +37,8 @@ public class RequestParameters {
 				&& Objects.equals(targetCurrencyCharCode, other.targetCurrencyCharCode)
 				&& Objects.equals(value, other.value);
 	}
-	
-	//parametersStr looks like "100,USD,EUR"
+
+	// parametersStr looks like "100,USD,EUR"
 	public static RequestParameters parse(String parametersStr) {
 		parametersStr = parametersStr.trim();
 		parametersStr = TrimQuotesIfExist(parametersStr);
@@ -47,7 +47,12 @@ public class RequestParameters {
 		if (parameters.size() != 3) {
 			throw new CurrencyExchangeException("Parameters should include number, String, String");
 		}
-		Double value = Double.parseDouble(parameters.get(0));
+		Double value;
+		try {
+			value = Double.parseDouble(parameters.get(0));
+		} catch (Exception e) {
+			throw new CurrencyExchangeException("Number format error");
+		}
 		return new RequestParameters(value, parameters.get(1), parameters.get(2));
 	}
 

@@ -13,8 +13,9 @@ import com.example.demo.service.CurrencyService;
 public class CurrencyExchangeTest {
 	private CurrencyService currencyService;
 
-	public CurrencyExchangeTest() {
-		this.currencyService = new CurrencyService(new CurrencyFromFile());
+	@Autowired
+	public CurrencyExchangeTest(CurrencyService currencyService) {
+		this.currencyService = new CurrencyService(new CurrencyFromFileService());
 	}
 
 	@Test
