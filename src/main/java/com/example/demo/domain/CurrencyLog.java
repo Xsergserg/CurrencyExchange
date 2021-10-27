@@ -8,7 +8,7 @@ import com.example.demo.dto.RequestParameters;
 
 @Entity
 @Table(name = "user_logs")
-public class CurrencyLogData {
+public class CurrencyLog {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -24,12 +24,11 @@ public class CurrencyLogData {
 
 	@Column
 	private double result;
-	
+
 	@Column(name = "request_time")
 	private Timestamp requestTime;
 
-	public CurrencyLogData(RequestParameters requestParameters, double result) {
-		//this.CurrencyLogData(requestParameters.getValue(), requestParameters.getSourceCurrencyCharCode(), requestParameters.getTargetCurrencyCharCode());
+	public CurrencyLog(RequestParameters requestParameters, double result) {
 		this.value = requestParameters.getValue();
 		this.sourceCurrencyCharCode = requestParameters.getSourceCurrencyCharCode();
 		this.targetCurrencyCharCode = requestParameters.getTargetCurrencyCharCode();
